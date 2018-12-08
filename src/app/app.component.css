@@ -1,0 +1,52 @@
+:host() {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to right, #16222a, #3a6073);
+}
+
+.mat-card.main {
+    min-width: 280px;
+    max-width: 450px;
+    width: 100%;
+}
+
+.topic-selection {
+    display: flex;
+    flex-direction: column;
+}
+
+.card-title {
+    margin: 10px;
+}
+
+.card-text {
+    font-weight: 500;
+    font-size: 18px;
+}
+  
+.card-section {
+    display: flex;
+    align-content: center;
+    align-items: center;
+    height: 60px;
+}
+
+.boxes-radio-group {
+    display: inline-flex;
+    flex-direction: column;
+}
+
+.boxes-radio-button {
+    margin: 5px;
+}
+
+.boxes-selected-value {
+    margin: 15px 0;
+}
+
+.success-btn {
+    background-color: rgb(76, 175, 80);
+}
