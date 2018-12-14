@@ -5,6 +5,7 @@ import { cards } from './cards';
 import { Card } from './card.model';
 import { topics } from './topics';
 import { YouSureDialog } from './you-sure.dialog';
+import { MatSnackBar } from '../../node_modules/@angular/material/snack-bar';
 
 @Component({
   selector: 'app-root',
@@ -23,7 +24,8 @@ export class AppComponent {
   selectedTopics = [];
 
   constructor(
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private snackBar: MatSnackBar
   ) {
     const storedCards = localStorage.getItem('cards');
     this.cards = JSON.parse(storedCards) || cards.map(card => ({...card}));
@@ -57,6 +59,10 @@ export class AppComponent {
   start() {
     const boxCardIds = this.getCards(this.selectedBox, this.selectedTopics);
     if (this.batchSize === 0 || boxCardIds.length === 0 || this.batchSize > boxCardIds.length) {
+      this.snackBar.open('Die Kartenzahl muss passend gewählt werden!', 'OK', {
+        duration: 2000,
+        verticalPosition: 'top'
+      });
       return;
     }
 
@@ -94,6 +100,16 @@ export class AppComponent {
   }
 
   failure() {
+    if (this.currentBatchIndex + 1 < this.batch.length) {
+      this.currentBatchIndex++;
+    } else {
+      this.batchDone();
+    }
+  }
+
+  backToOne() {
+    this.cards[this.batch[this.currentBatchIndex]].box = 1;
+    localStorage.setItem('cards', JSON.stringify(this.cards));
     if (this.currentBatchIndex + 1 < this.batch.length) {
       this.currentBatchIndex++;
     } else {

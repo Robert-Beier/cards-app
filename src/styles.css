@@ -1,4 +1,26 @@
 /* You can add global styles to this file, and also import other style files */
 
-html, body { height: 100%; }
+/* html, body { height: 100%; } */
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+
+.mat-checkbox-label {
+    word-wrap: break-word!important;
+    white-space: pre-wrap!important;
+}
+
+@media(max-width: 450px) {
+    .mobile-buttons-column.mat-card-actions {
+        display: flex!important;
+        flex-wrap: wrap!important;
+        flex-direction: column!important;
+        align-items: baseline!important;
+    }
+
+    .mobile-buttons-column.mat-card-actions .mat-raised-button {
+        margin-left: 0px!important;
+        margin-right: 0px!important;
+        margin-top: 4px!important;
+        margin-bottom: 4px!important;
+    }
+}

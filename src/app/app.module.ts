@@ -7,6 +7,7 @@ import {MatCardModule} from '@angular/material/card';
 import {MatInputModule} from '@angular/material/input';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatDialogModule} from '@angular/material/dialog';
+import {MatSnackBarModule} from '@angular/material/snack-bar';
 
 import { AppComponent } from './app.component';
 import { FormsModule } from '../../node_modules/@angular/forms';
@@ -29,7 +30,8 @@ import { YouSureDialog } from './you-sure.dialog';
     MatCardModule,
     MatInputModule,
     MatCheckboxModule,
-    MatDialogModule
+    MatDialogModule,
+    MatSnackBarModule
   ],
   providers: [],
   bootstrap: [AppComponent]

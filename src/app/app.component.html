@@ -1,11 +1,11 @@
 <mat-card class="main selection" *ngIf="mode === 0">
   <mat-card-content>
-    <h2 class="card-title">Karten</h2>
+    <h2 class="card-title">Karteikarten KI</h2>
     <section>
       <h3>Themen wählen:</h3>
       <div class="topic-selection">
         <ng-template ngFor let-i="index" let-topic [ngForOf]="topics">
-          <mat-checkbox class="example-margin" [(ngModel)]="selectedTopics[i]" (click)="updateBatchSize()">{{topic}}</mat-checkbox>
+          <mat-checkbox [(ngModel)]="selectedTopics[i]" (click)="updateBatchSize()">{{topic}}</mat-checkbox>
         </ng-template>
       </div>
     </section>
@@ -35,8 +35,9 @@
     <h3>{{ topics[cards[batch[currentBatchIndex]].topic] }}</h3>
     <span class="card-text">{{ cards[batch[currentBatchIndex]].label }}</span>
   </mat-card-content>
-  <mat-card-actions>
+  <mat-card-actions class="mobile-buttons-column">
     <button mat-raised-button color="primary" (click)="success()">In die nächste Box</button>
-    <button mat-raised-button color="warn" (click)="failure()">Wiederholen</button>
+    <button mat-raised-button color="primary" (click)="failure()">Wiederholen</button>
+    <button mat-raised-button color="warn" (click)="backToOne()">Zurück in Box 1</button>
   </mat-card-actions>
 </mat-card>
