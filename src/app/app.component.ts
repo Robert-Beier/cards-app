@@ -29,8 +29,10 @@ export class AppComponent {
   ) {
     this.sets = [...defaultSets.map(set => ({...set, cards: set.cards.map(card => ({...card}))}))];
     this.sets = this.sets.map(set => {
-      const storedCards = (localStorage.getItem(set.id + '.cards'));
-      set.cards = JSON.parse(storedCards) || set.cards;
+      const storedCards = JSON.parse(localStorage.getItem(set.id + '.cards'));
+      if (storedCards !== null) {
+        set.cards = set.cards.map(card => ({...card, box: storedCards[card.id] || card.box}) );
+      }
       return set;
     });
     this.selectedTopics = this.sets[this.selectedSet].topics.map(() => true);
@@ -103,7 +105,7 @@ export class AppComponent {
 
   success() {
     this.sets[this.selectedSet].cards[this.batch[this.currentBatchIndex]].box++;
-    localStorage.setItem(this.sets[this.selectedSet].id + '.cards', JSON.stringify(this.sets[this.selectedSet].cards));
+    this.saveCardsState(this.sets[this.selectedSet]);
     if (this.currentBatchIndex + 1 < this.batch.length) {
       this.currentBatchIndex++;
     } else {
@@ -121,7 +123,7 @@ export class AppComponent {
 
   backToOne() {
     this.sets[this.selectedSet].cards[this.batch[this.currentBatchIndex]].box = 1;
-    localStorage.setItem(this.sets[this.selectedSet].id + '.cards', JSON.stringify(this.sets[this.selectedSet].cards));
+    this.saveCardsState(this.sets[this.selectedSet]);
     if (this.currentBatchIndex + 1 < this.batch.length) {
       this.currentBatchIndex++;
     } else {
@@ -133,5 +135,9 @@ export class AppComponent {
     this.batch = [];
     this.currentBatchIndex = null;
     this.mode = 0;
+  }
+
+  saveCardsState(set: Set) {
+    localStorage.setItem(set.id + '.cards', JSON.stringify(set.cards.map(card => card.box)));
   }
 }
