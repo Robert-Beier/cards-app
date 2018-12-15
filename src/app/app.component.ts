@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 
-import { cards } from './cards';
 import { Card } from './card.model';
-import { topics } from './topics';
 import { YouSureDialog } from './you-sure.dialog';
 import { MatSnackBar } from '../../node_modules/@angular/material/snack-bar';
+import { Set } from './set.model';
+import { defaultSets } from './default-sets';
 
 @Component({
   selector: 'app-root',
@@ -15,23 +15,25 @@ import { MatSnackBar } from '../../node_modules/@angular/material/snack-bar';
 export class AppComponent {
   boxCount = 7;
   private _selectedBox = 1;
-  cards: Card[];
-  topics: string[];
   batchSize = 5;
   mode = 0;
   currentBatchIndex = null;
   batch = [];
   selectedTopics = [];
+  private _selectedSet = 0;
+  sets: Set[] = [];
 
   constructor(
     private dialog: MatDialog,
     private snackBar: MatSnackBar
   ) {
-    const storedCards = localStorage.getItem('cards');
-    this.cards = JSON.parse(storedCards) || cards.map(card => ({...card}));
-    const storedTopics = localStorage.getItem('topics');
-    this.topics = JSON.parse(storedTopics) || [...topics];
-    this.selectedTopics = this.topics.map(() => true);
+    this.sets = [...defaultSets.map(set => ({...set, cards: set.cards.map(card => ({...card}))}))];
+    this.sets = this.sets.map(set => {
+      const storedCards = (localStorage.getItem(set.id + '.cards'));
+      set.cards = JSON.parse(storedCards) || set.cards;
+      return set;
+    });
+    this.selectedTopics = this.sets[this.selectedSet].topics.map(() => true);
   }
 
   get selectedBox(): number {
@@ -43,12 +45,22 @@ export class AppComponent {
     this.updateBatchSize();
   }
 
+  get selectedSet(): number {
+    return this._selectedSet;
+  }
+
+  set selectedSet(set: number) {
+    this.selectedTopics = this.sets[set].topics.map(() => true);
+    this.selectedBox = 1;
+    this._selectedSet = set;
+  }
+
   updateBatchSize() {
     this.batchSize = Math.min(this.batchSize, this.getCards(this.selectedBox, this.selectedTopics).length);
   }
 
   getCards(box: number, selectedTopics: boolean[]) {
-    return this.cards.reduce((cardIds: number[], card: Card, cardId: number) => {
+    return this.sets[this.selectedSet].cards.reduce((cardIds: number[], card: Card, cardId: number) => {
       if (card.box === box && selectedTopics[card.topic]) {
         cardIds.push(cardId);
       }
@@ -83,15 +95,15 @@ export class AppComponent {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result === true) {
-        this.cards =  cards.map(card => ({...card}));
-        localStorage.removeItem('cards');
+        this.sets[this.selectedSet].cards =  defaultSets[this.selectedSet].cards.map(card => ({...card}));
+        localStorage.removeItem(this.sets[this.selectedSet].id + '.cards');
       }
     });
   }
 
   success() {
-    this.cards[this.batch[this.currentBatchIndex]].box++;
-    localStorage.setItem('cards', JSON.stringify(this.cards));
+    this.sets[this.selectedSet].cards[this.batch[this.currentBatchIndex]].box++;
+    localStorage.setItem(this.sets[this.selectedSet].id + '.cards', JSON.stringify(this.sets[this.selectedSet].cards));
     if (this.currentBatchIndex + 1 < this.batch.length) {
       this.currentBatchIndex++;
     } else {
@@ -108,8 +120,8 @@ export class AppComponent {
   }
 
   backToOne() {
-    this.cards[this.batch[this.currentBatchIndex]].box = 1;
-    localStorage.setItem('cards', JSON.stringify(this.cards));
+    this.sets[this.selectedSet].cards[this.batch[this.currentBatchIndex]].box = 1;
+    localStorage.setItem(this.sets[this.selectedSet].id + '.cards', JSON.stringify(this.sets[this.selectedSet].cards));
     if (this.currentBatchIndex + 1 < this.batch.length) {
       this.currentBatchIndex++;
     } else {

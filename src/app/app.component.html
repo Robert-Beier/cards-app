@@ -1,11 +1,21 @@
 <mat-card class="main selection" *ngIf="mode === 0">
   <mat-card-content>
-    <h2 class="card-title">Karteikarten KI</h2>
+    <h2 class="card-title">Karteikarten</h2>
+    <section>
+      <h3>Set wählen:</h3>
+      <mat-radio-group class="boxes-radio-group" [(ngModel)]="selectedSet">
+        <ng-template ngFor let-i="index" let-set [ngForOf]="sets">
+          <mat-radio-button class="boxes-radio-button" [value]="i">
+            {{ set.label }}
+          </mat-radio-button>
+        </ng-template>
+      </mat-radio-group>
+    </section>
     <section>
       <h3>Themen wählen:</h3>
       <div class="topic-selection">
-        <ng-template ngFor let-i="index" let-topic [ngForOf]="topics">
-          <mat-checkbox [(ngModel)]="selectedTopics[i]" (click)="updateBatchSize()">{{topic}}</mat-checkbox>
+        <ng-template ngFor let-i="index" let-topic [ngForOf]="sets[selectedSet].topics">
+          <mat-checkbox [(ngModel)]="selectedTopics[i]" (click)="updateBatchSize()">{{topic.label}}</mat-checkbox>
         </ng-template>
       </div>
     </section>
@@ -32,8 +42,8 @@
 
 <mat-card class="main question" *ngIf="mode === 1">
   <mat-card-content>
-    <h3>{{ topics[cards[batch[currentBatchIndex]].topic] }}</h3>
-    <span class="card-text">{{ cards[batch[currentBatchIndex]].label }}</span>
+    <h3>{{ sets[selectedSet].topics[sets[selectedSet].cards[batch[currentBatchIndex]].topic].label }}</h3>
+    <span class="card-text">{{ sets[selectedSet].cards[batch[currentBatchIndex]].label }}</span>
   </mat-card-content>
   <mat-card-actions class="mobile-buttons-column">
     <button mat-raised-button color="primary" (click)="success()">In die nächste Box</button>
